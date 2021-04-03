@@ -1,0 +1,20 @@
+dwa rodzaje interakcji.
+
+albo poprzez argumenty:
+
+pcrm add --forename "Tomasz" --surname "Nowakowski" -bd 19920110
+
+albo poprzez interactive prompt:
+
+pcrm add
+
+> Name: 
+
+> Surname:
+
+> Birthdate:
+
+
+Każda osoba będzie miała swój nr ID, więc można np:
+
+pcrm edit 12 -fn "Tomek"
