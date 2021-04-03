@@ -29,8 +29,9 @@ package main
 
 
 import (
-	//"encoding/json"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 )
 
@@ -108,7 +109,32 @@ func interactiveAdd() {
 
 
 func addPerson(forename, surname, birthdate string) {
-	fmt.Println("Forename:", forename)
-	fmt.Println("Surname:", surname)
-	fmt.Println("Birthdate:", birthdate)
+	var err error
+	var persons = &[]Person{}
+
+	f, err := ioutil.ReadFile("./data/people.json")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("OK")
+	}
+
+	err = json.Unmarshal([]byte(f), persons)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("OK")
+	}
+
+	newPerson := &Person{forename, surname, birthdate}
+	*persons = append(*persons, *newPerson)
+	fmt.Println(persons)
+
+	data, err := json.Marshal(newPerson)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("OK")
+	}
+	fmt.Println(string(data))
 }
