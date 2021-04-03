@@ -130,7 +130,7 @@ func addPerson(forename, surname, birthdate string) {
 	*persons = append(*persons, *newPerson)
 	fmt.Println(persons)
 
-	data, err := json.Marshal(persons)
+	data, err := json.MarshalIndent(persons, "", "    ")
 	if err != nil {
 		fmt.Println(err)
 	} else {
