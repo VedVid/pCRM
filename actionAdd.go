@@ -130,11 +130,17 @@ func addPerson(forename, surname, birthdate string) {
 	*persons = append(*persons, *newPerson)
 	fmt.Println(persons)
 
-	data, err := json.Marshal(newPerson)
+	data, err := json.Marshal(persons)
 	if err != nil {
 		fmt.Println(err)
 	} else {
 		fmt.Println("OK")
 	}
-	fmt.Println(string(data))
+
+	err = ioutil.WriteFile("./data/people.json", data, 0644)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("OK")
+	}
 }
