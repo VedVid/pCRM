@@ -28,38 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package main
 
 
-import (
-	"flag"
-	"fmt"
-)
-
-
-func main() {
-	// Main flags that will determine what action will be triggered
-	add := flag.Bool("add", false, "add new person")
-	edit := flag.Bool("edit", false, "edit existing person")
-	read := flag.Bool("read", false, "read data about existing person")
-	search := flag.Bool("search", false, "search person by parameters")
-
-	// Optional flags
-	forename := flag.String("forename", "", "")
-	forenameShort := flag.String("fn", "", "")
-	surname := flag.String("surname", "", "")
-	surnameShort := flag.String("sn", "", "")
-	birthdate := flag.String("birthdate", "", "")
-	birthdateShort := flag.String("bd", "", "")
-
-	flag.Parse()
-
-	if *add == true && *edit == false && *read == false && *search == false {
-		ActionAdd(*forename, *forenameShort, *surname, *surnameShort, *birthdate, *birthdateShort)
-	} else if *add == false && *edit == true && *read == false && *search == false {
-		fmt.Println("editing a person...")
-	} else if *add == false && *edit == false && *read == true && *search == false {
-		fmt.Println("reading about a person...")
-	} else if *add == false && *edit == false && *read == false && *search == true {
-		fmt.Println("searching for a person...")
-	} else {
-		fmt.Println("wrong parameters; you need to -add, OR -edit, OR -read.")
-	}
+type Person struct {
+	Forename  string `json:"Forename,omitempty"`
+	Surname   string `json:"Surname,omitempty"`
+	Birthdate string `json:"Birthdate,omitempty"`
 }

@@ -29,7 +29,9 @@ package main
 
 
 import (
+	//"encoding/json"
 	"fmt"
+	"os"
 )
 
 
@@ -38,7 +40,9 @@ func ActionAdd(forename, fn, surname, sn, birthdate, bd string) {
 	if forename == "" && fn == "" && surname == "" && sn == "" &&
 		birthdate == "" && bd == "" {
 		fmt.Println("INFO: Switching to interactive mode.")
-		}
+		interactiveAdd()
+		os.Exit(1)
+	}
 
 	switch {
 	case len(forename) == 0 && len(fn) == 0:
@@ -46,10 +50,16 @@ func ActionAdd(forename, fn, surname, sn, birthdate, bd string) {
 	case forename == fn:
 		fmt.Println("WARNING: You used two flags to set forename.")
 		break
-	case (len(forename) > 0 && len(fn) == 0) || (len(forename) == 0 && len(fn) > 0):
+	case len(forename) > 0 && len(fn) == 0:
 		fmt.Println("INFO: Proper data entered.")
+		break
+	case len(forename) == 0 && len(fn) > 0:
+		fmt.Println("INFO: Proper data entered.")
+		forename = fn
+		break
 	default:
 		fmt.Println("ERROR: You used two flags to set forename, each with different data.")
+		os.Exit(-1)
 	}
 
 	switch {
@@ -58,10 +68,16 @@ func ActionAdd(forename, fn, surname, sn, birthdate, bd string) {
 	case surname == sn:
 		fmt.Println("WARNING: You used two flags to set surname.")
 		break
-	case (len(surname) > 0 && len(sn) == 0) || (len(surname) == 0 && len(sn) > 0):
+	case len(surname) > 0 && len(sn) == 0:
 		fmt.Println("INFO: Proper data entered.")
+		break
+	case len(surname) == 0 && len(sn) > 0:
+		fmt.Println("INFO: Proper data entered.")
+		surname = sn
+		break
 	default:
 		fmt.Println("ERROR: You used two flags to set surname, each with different data.")
+		os.Exit(-1)
 	}
 
 	switch {
@@ -70,9 +86,29 @@ func ActionAdd(forename, fn, surname, sn, birthdate, bd string) {
 	case birthdate == bd:
 		fmt.Println("WARNING: You used two flags to set birthdate.")
 		break
-	case (len(birthdate) > 0 && len(bd) == 0) || (len(birthdate) == 0 && len(bd) > 0):
+	case len(birthdate) > 0 && len(bd) == 0:
 		fmt.Println("INFO: Proper data entered.")
+		break
+	case len(birthdate) == 0 && len(bd) > 0:
+		fmt.Println("INFO: Proper data entered.")
+		birthdate = bd
+		break
 	default:
 		fmt.Println("ERROR: You used two flags to set birthdate, each with different data.")
+		os.Exit(-1)
 	}
+
+	addPerson(forename, surname, birthdate)
+}
+
+
+func interactiveAdd() {
+	fmt.Println("WERR: Interactive mode not implemented yet.")
+}
+
+
+func addPerson(forename, surname, birthdate string) {
+	fmt.Println("Forename:", forename)
+	fmt.Println("Surname:", surname)
+	fmt.Println("Birthdate:", birthdate)
 }
