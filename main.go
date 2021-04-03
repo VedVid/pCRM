@@ -65,7 +65,7 @@ func main() {
 	} else if *add == false && *edit == false && *read == false && *search == true {
 		fmt.Println("searching for a person...")
 	} else {
-		fmt.Println("wrong parameters; you need to -add, OR -edit, OR -read.")
+		fmt.Println("wrong parameters; you need to -add, OR -edit, OR -read, OR -search.")
 	}
 }
 
