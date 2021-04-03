@@ -29,7 +29,9 @@ package main
 
 
 type Person struct {
+	Id        int    `json:"Id,omitempty`
 	Forename  string `json:"Forename,omitempty"`
 	Surname   string `json:"Surname,omitempty"`
 	Birthdate string `json:"Birthdate,omitempty"`
+	Nickname  string `json:"Nickname,omitempty"`
 }

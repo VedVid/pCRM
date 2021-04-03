@@ -31,6 +31,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"math/rand"
+	"time"
 )
 
 
@@ -48,11 +50,14 @@ func main() {
 	surnameShort := flag.String("sn", "", "")
 	birthdate := flag.String("birthdate", "", "")
 	birthdateShort := flag.String("bd", "", "")
+	nickname := flag.String("nickname", "", "")
+	nicknameShort := flag.String("nn", "", "")
 
 	flag.Parse()
 
 	if *add == true && *edit == false && *read == false && *search == false {
-		ActionAdd(*forename, *forenameShort, *surname, *surnameShort, *birthdate, *birthdateShort)
+		ActionAdd(*forename, *forenameShort, *surname, *surnameShort,
+			*birthdate, *birthdateShort, *nickname, *nicknameShort)
 	} else if *add == false && *edit == true && *read == false && *search == false {
 		fmt.Println("editing a person...")
 	} else if *add == false && *edit == false && *read == true && *search == false {
@@ -62,4 +67,9 @@ func main() {
 	} else {
 		fmt.Println("wrong parameters; you need to -add, OR -edit, OR -read.")
 	}
+}
+
+
+func init() {
+	rand.Seed(time.Now().UTC().UnixNano())
 }

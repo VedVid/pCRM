@@ -33,13 +33,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"math/rand"
 )
 
 
-func ActionAdd(forename, fn, surname, sn, birthdate, bd string) {
+func ActionAdd(forename, fn, surname, sn, birthdate, bd, nickname, nn string) {
 
 	if forename == "" && fn == "" && surname == "" && sn == "" &&
-		birthdate == "" && bd == "" {
+		birthdate == "" && bd == "" && nickname == "" && nn == "" {
 		fmt.Println("INFO: Switching to interactive mode.")
 		interactiveAdd()
 		os.Exit(1)
@@ -99,7 +100,25 @@ func ActionAdd(forename, fn, surname, sn, birthdate, bd string) {
 		os.Exit(-1)
 	}
 
-	addPerson(forename, surname, birthdate)
+	switch {
+	case len(nickname) == 0 && len(nn) == 0:
+		break
+	case nickname == nn:
+		fmt.Println("WARNING: You used two flags to set nickname.")
+		break
+	case len(nickname) > 0 && len(nn) == 0:
+		fmt.Println("INFO: Proper data entered.")
+		break
+	case len(nickname) == 0 && len(nn) > 0:
+		fmt.Println("INFO: Proper data entered.")
+		nickname = nn
+		break
+	default:
+		fmt.Println("ERROR: You used two flags to set nickname, each with different data.")
+		os.Exit(-1)
+	}
+
+	addPerson(forename, surname, birthdate, nickname)
 }
 
 
@@ -108,9 +127,10 @@ func interactiveAdd() {
 }
 
 
-func addPerson(forename, surname, birthdate string) {
+func addPerson(forename, surname, birthdate, nickname string) {
 	var err error
 	var persons = &[]Person{}
+	var ids = []int{}
 
 	f, err := ioutil.ReadFile("./data/people.json")
 	if err != nil {
@@ -126,9 +146,41 @@ func addPerson(forename, surname, birthdate string) {
 		fmt.Println("OK")
 	}
 
-	newPerson := &Person{forename, surname, birthdate}
-	*persons = append(*persons, *newPerson)
-	fmt.Println(persons)
+	for i := 0; i < len(*persons); i++ {
+		ids = append(ids, (*persons)[i].Id)
+	}
+	id := -1
+	tries := 1000
+	maxnum := 1000  // The same as tries
+	for {
+		if tries <= 0 {
+			fmt.Println("ERROR: Max number of entries (999) has been reached)")
+			break
+		}
+		r := rand.Intn(maxnum)
+		valid := true
+		for _, v := range ids {
+			if r == 0 {
+				valid = false
+				break
+			}
+			if r == v {
+				valid = false
+				break
+			}
+		}
+		if valid == true {
+			id = r
+			break
+		}
+		tries--
+	}
+
+	if id > 0 {
+		newPerson := &Person{id, forename, surname, birthdate, nickname}
+		*persons = append(*persons, *newPerson)
+		fmt.Println(persons)
+	}
 
 	data, err := json.MarshalIndent(persons, "", "    ")
 	if err != nil {
