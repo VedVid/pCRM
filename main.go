@@ -40,7 +40,7 @@ func main() {
 	// Main flags that will determine what action will be triggered
 	add := flag.Bool("add", false, "add new person")
 	edit := flag.Int("edit", -1, "edit existing person")
-	read := flag.Bool("read", false, "read data about existing person, by ID")
+	read := flag.Int("read", -1, "read data about existing person, by ID")
 	search := flag.Bool("search", false, "search person by parameters")
 
 	// Optional flags
@@ -55,15 +55,16 @@ func main() {
 
 	flag.Parse()
 
-	if *add == true && *edit < 0 && *read == false && *search == false {
+	if *add == true && *edit < 0 && *read < 0 && *search == false {
 		ActionAdd(*forename, *forenameShort, *surname, *surnameShort,
 			*birthdate, *birthdateShort, *nickname, *nicknameShort)
-	} else if *add == false && *edit >= 0 && *read == false && *search == false {
+	} else if *add == false && *edit >= 0 && *read < 0 && *search == false {
 		ActionEdit(*edit, *forename, *forenameShort, *surname, *surnameShort,
 			*birthdate, *birthdateShort, *nickname, *nicknameShort)
-	} else if *add == false && *edit < 0 && *read == true && *search == false {
-		fmt.Println("reading about a person...")
-	} else if *add == false && *edit < 0 && *read == false && *search == true {
+	} else if *add == false && *edit < 0 && *read >= 0 && *search == false {
+		ActionRead(*read, *forename, *forenameShort, *surname, *surnameShort,
+			*birthdate, *birthdateShort, *nickname, *nicknameShort)
+	} else if *add == false && *edit < 0 && *read < 0 && *search == true {
 		fmt.Println("searching for a person...")
 	} else {
 		fmt.Println("wrong parameters; you need to -add, OR -edit, OR -read, OR -search.")
