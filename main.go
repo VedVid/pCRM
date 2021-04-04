@@ -65,7 +65,8 @@ func main() {
 		ActionRead(*read, *forename, *forenameShort, *surname, *surnameShort,
 			*birthdate, *birthdateShort, *nickname, *nicknameShort)
 	} else if *add == false && *edit < 0 && *read < 0 && *search == true {
-		fmt.Println("searching for a person...")
+		ActionSearch(*forename, *forenameShort, *surname, *surnameShort,
+			*birthdate, *birthdateShort, *nickname, *nicknameShort)
 	} else {
 		fmt.Println("wrong parameters; you need to -add, OR -edit, OR -read, OR -search.")
 	}

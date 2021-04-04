@@ -36,17 +36,12 @@ import (
 )
 
 
-func ActionRead(id int, forename, fn, surname, sn, birthdate, bd, nickname, nn string) {
-
-	if id < 0 {
-		fmt.Println("ERROR: Wrong id passed.")
-		os.Exit(-1)
-	}
+func ActionSearch(forename, fn, surname, sn, birthdate, bd, nickname, nn string) {
 
 	if forename == "" && fn == "" && surname == "" && sn == "" &&
 		birthdate == "" && bd == "" && nickname == "" && nn == "" {
-		fmt.Println("INFO: Show all fields.")
-		readPerson(id, true, "", "", "", "")
+		fmt.Println("INFO: Switching to interactive mode.")
+		interactiveSearch()
 		os.Exit(1)
 	}
 
@@ -110,13 +105,19 @@ func ActionRead(id int, forename, fn, surname, sn, birthdate, bd, nickname, nn s
 		break
 	}
 
-	readPerson(id, false, forename, surname, birthdate, nickname)
+	searchPerson(forename, surname, birthdate, nickname)
 }
 
 
-func readPerson(id int, all bool, forename, surname, birthdate, nickname string) {
+func interactiveSearch() {
+	fmt.Println("WERR: Interactive mode not implemented yet.")
+}
+
+
+func searchPerson(forename, surname, birthdate, nickname string) {
 	var err error
 	var persons = &[]Person{}
+	var tempPersons = []Person{}
 
 	f, err := ioutil.ReadFile("./data/people.json")
 	if err != nil {
@@ -132,36 +133,46 @@ func readPerson(id int, all bool, forename, surname, birthdate, nickname string)
 		fmt.Println("OK")
 	}
 
-	validID := false
+	validForename := false
+	validSurname := false
+	validBirthdate := false
+	validNickname := false
 	for _, v := range *persons {
-		if id == v.Id {
-			validID = true
-			if all == true {
-				fmt.Println("Id:       ", v.Id)
-				fmt.Println("Forename: ", v.Forename)
-				fmt.Println("Surname:  ", v.Surname)
-				fmt.Println("Birthdate:", v.Birthdate)
-				fmt.Println("Nickname: ", v.Nickname)
-			} else {
-				fmt.Println("Id:       ", v.Id)
-				if forename != "" {
-					fmt.Println("Forename: ", v.Forename)
-				}
-				if surname != "" {
-					fmt.Println("Surname:  ", v.Surname)
-				}
-				if birthdate != "" {
-					fmt.Println("Birthdate:", v.Birthdate)
-				}
-				if nickname != "" {
-					fmt.Println("Nickname: ", v.Nickname)
-				}
-			}
-			break
+		if forename == "" {
+			validForename = true
+		}
+		if forename != "" && forename == v.Forename {
+			validForename = true
+		}
+		if surname == "" {
+			validSurname = true
+		}
+		if surname != "" && surname == v.Surname {
+			validSurname = true
+		}
+		if birthdate == "" {
+			validBirthdate = true
+		}
+		if birthdate != "" && birthdate == v.Birthdate {
+			validBirthdate = true
+		}
+		if nickname == "" {
+			validNickname = true
+		}
+		if nickname != "" && nickname == v.Nickname {
+			validNickname = true
+		}
+		if validForename == true && validSurname == true &&
+			validBirthdate == true && validNickname == true {
+				tempPersons = append(tempPersons, v)
 		}
 	}
 
-	if validID == false {
-		fmt.Println("ERROR: ID", id, "not found.")
+	for _, v := range tempPersons {
+		fmt.Println("Id:       ", v.Id)
+		fmt.Println("Forename: ", v.Forename)
+		fmt.Println("Surname:  ", v.Surname)
+		fmt.Println("Birthdate:", v.Birthdate)
+		fmt.Println("Nickname: ", v.Nickname)
 	}
 }
