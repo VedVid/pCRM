@@ -36,6 +36,6 @@ type Person struct {
 	Nickname  string `json:"Nickname,omitempty"`
 }
 
-type Categories struct {
-	Categories []string `json:"Categories,omitempty"`
+type Category struct {
+	Name string `json:"Name,omitempty"`
 }

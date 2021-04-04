@@ -29,10 +29,10 @@ package main
 
 
 import (
-	//"encoding/json"
+	"encoding/json"
 	"flag"
 	"fmt"
-	//"io/ioutil"
+	"io/ioutil"
 	"os"
 )
 
@@ -89,7 +89,53 @@ func interactiveCategory() {
 
 
 func newCategory(cnew string) {
-	fmt.Println(cnew)
+	var err error
+	var categories = &[]Category{}
+
+	f, err := ioutil.ReadFile("./data/categories.json")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("OK")
+	}
+
+	err = json.Unmarshal([]byte(f), categories)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("OK")
+	}
+
+	validName := true
+	for _, v := range *categories {
+		if cnew == v.Name {
+			validName = false
+			break
+		}
+	}
+
+	if validName == true {
+		newCategory := &Category{cnew}
+		*categories = append(*categories, *newCategory)
+		fmt.Println(categories)
+	} else {
+		fmt.Println("ERROR: This name is taken already.")
+		os.Exit(-1)
+	}
+
+	data, err := json.MarshalIndent(categories, "", "    ")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("OK")
+	}
+
+	err = ioutil.WriteFile("./data/categories.json", data, 0644)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("OK")
+	}
 }
 
 
