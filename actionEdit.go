@@ -56,10 +56,8 @@ func ActionEdit(id int, forename, fn, surname, sn, birthdate, bd, nickname, nn s
 		fmt.Println("WARNING: You used two flags to set forename.")
 		break
 	case len(forename) > 0 && len(fn) == 0:
-		fmt.Println("INFO: Proper data entered.")
 		break
 	case len(forename) == 0 && len(fn) > 0:
-		fmt.Println("INFO: Proper data entered.")
 		forename = fn
 		break
 	default:
@@ -74,10 +72,8 @@ func ActionEdit(id int, forename, fn, surname, sn, birthdate, bd, nickname, nn s
 		fmt.Println("WARNING: You used two flags to set surname.")
 		break
 	case len(surname) > 0 && len(sn) == 0:
-		fmt.Println("INFO: Proper data entered.")
 		break
 	case len(surname) == 0 && len(sn) > 0:
-		fmt.Println("INFO: Proper data entered.")
 		surname = sn
 		break
 	default:
@@ -92,10 +88,8 @@ func ActionEdit(id int, forename, fn, surname, sn, birthdate, bd, nickname, nn s
 		fmt.Println("WARNING: You used two flags to set birthdate.")
 		break
 	case len(birthdate) > 0 && len(bd) == 0:
-		fmt.Println("INFO: Proper data entered.")
 		break
 	case len(birthdate) == 0 && len(bd) > 0:
-		fmt.Println("INFO: Proper data entered.")
 		birthdate = bd
 		break
 	default:
@@ -110,10 +104,8 @@ func ActionEdit(id int, forename, fn, surname, sn, birthdate, bd, nickname, nn s
 		fmt.Println("WARNING: You used two flags to set nickname.")
 		break
 	case len(nickname) > 0 && len(nn) == 0:
-		fmt.Println("INFO: Proper data entered.")
 		break
 	case len(nickname) == 0 && len(nn) > 0:
-		fmt.Println("INFO: Proper data entered.")
 		nickname = nn
 		break
 	default:
@@ -148,8 +140,10 @@ func editPerson(id int, forename, surname, birthdate, nickname string) {
 		fmt.Println("OK")
 	}
 
+	validID := false
 	for i, v := range *persons {
 		if id == v.Id {
+			validID = true
 			if forename != "" {
 				(*persons)[i].Forename = forename
 			}
@@ -178,5 +172,9 @@ func editPerson(id int, forename, surname, birthdate, nickname string) {
 		fmt.Println(err)
 	} else {
 		fmt.Println("OK")
+	}
+
+	if validID == false {
+		fmt.Println("ERROR: ID", id, "not found.")
 	}
 }
