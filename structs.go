@@ -35,3 +35,7 @@ type Person struct {
 	Birthdate string `json:"Birthdate,omitempty"`
 	Nickname  string `json:"Nickname,omitempty"`
 }
+
+type Categories struct {
+	Categories []string `json:"Categories,omitempty"`
+}

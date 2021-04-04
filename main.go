@@ -42,8 +42,9 @@ func main() {
 	edit := flag.Int("edit", -1, "edit existing person")
 	read := flag.Int("read", -1, "read data about existing person, by ID")
 	search := flag.Bool("search", false, "search person by parameters")
+	categories := flag.Bool("category", false, "manage categories")
 
-	// Optional flags
+	// Optional flags for people
 	forename := flag.String("forename", "", "")
 	forenameShort := flag.String("fn", "", "")
 	surname := flag.String("surname", "", "")
@@ -53,20 +54,28 @@ func main() {
 	nickname := flag.String("nickname", "", "")
 	nicknameShort := flag.String("nn", "", "")
 
+	// Optional flags for categories
+	categoryNew := flag.String("cnew", "", "add new category")
+	categoryNewShort := flag.String("cn", "", "add new category")
+	categoryEdit := flag.String("cedit", "", "edit existing category")
+	categoryEditShort := flag.String("ce", "", "edit existing category")
+
 	flag.Parse()
 
-	if *add == true && *edit < 0 && *read < 0 && *search == false {
+	if *add == true && *edit < 0 && *read < 0 && *search == false && *categories == false {
 		ActionAdd(*forename, *forenameShort, *surname, *surnameShort,
 			*birthdate, *birthdateShort, *nickname, *nicknameShort)
-	} else if *add == false && *edit >= 0 && *read < 0 && *search == false {
+	} else if *add == false && *edit >= 0 && *read < 0 && *search == false && *categories == false {
 		ActionEdit(*edit, *forename, *forenameShort, *surname, *surnameShort,
 			*birthdate, *birthdateShort, *nickname, *nicknameShort)
-	} else if *add == false && *edit < 0 && *read >= 0 && *search == false {
+	} else if *add == false && *edit < 0 && *read >= 0 && *search == false && *categories == false {
 		ActionRead(*read, *forename, *forenameShort, *surname, *surnameShort,
 			*birthdate, *birthdateShort, *nickname, *nicknameShort)
-	} else if *add == false && *edit < 0 && *read < 0 && *search == true {
+	} else if *add == false && *edit < 0 && *read < 0 && *search == true && *categories == false {
 		ActionSearch(*forename, *forenameShort, *surname, *surnameShort,
 			*birthdate, *birthdateShort, *nickname, *nicknameShort)
+	} else if *add == false && *edit < 0 && *read < 0 && *search == false && *categories == true {
+		ActionCategory(*categoryNew, *categoryNewShort, *categoryEdit, *categoryEditShort)
 	} else {
 		fmt.Println("wrong parameters; you need to -add, OR -edit, OR -read, OR -search.")
 	}
