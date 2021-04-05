@@ -37,9 +37,10 @@ import (
 )
 
 
-func ActionCategory(cnew, cn, cedit, ce string) {
+func ActionCategory(cnew, cn, cedit, ce string, clist, cl bool) {
 
-	if cnew == "" && cn == "" && cedit == "" && ce == "" {
+	if cnew == "" && cn == "" && cedit == "" && ce == "" &&
+		clist == false && cl == false {
 		fmt.Println("INFO: Switching to interactive mode.")
 		interactiveCategory()
 		os.Exit(1)
@@ -78,6 +79,17 @@ func ActionCategory(cnew, cn, cedit, ce string) {
 		os.Exit(1)
 	default:
 		fmt.Println("ERROR: You used two flags to edit category, each with different data.")
+		os.Exit(-1)
+	}
+
+	switch {
+	case clist == true || cl == true:
+		readCategories()
+		os.Exit(1)
+	case clist == false && cl == false:
+		break
+	default:
+		fmt.Println("ERROR: Something went wrong using clist or cl flags.")
 		os.Exit(-1)
 	}
 }
@@ -195,5 +207,32 @@ func editCategory(cedit string) {
 		fmt.Println(err)
 	} else {
 		fmt.Println("OK")
+	}
+}
+
+
+func readCategories() {
+	var err error
+	var categories = &[]Category{}
+
+	f, err := ioutil.ReadFile("./data/categories.json")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("OK")
+	}
+
+	err = json.Unmarshal([]byte(f), categories)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("OK")
+	}
+
+	if len(*categories) == 0 {
+		fmt.Println("No categories found.")
+	}
+	for _, v := range *categories {
+		fmt.Println("-", v.Name)
 	}
 }
