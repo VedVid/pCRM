@@ -114,7 +114,7 @@ func ActionRead(id int, forename, fn, surname, sn, birthdate, bd, nickname, nn s
 	case trackBirthdate < 0 && tb < 0:
 		break
 	case trackBirthdate == tb:
-		fmt.Println("WARNING: You used two flags to set birthdate tracking.")
+		fmt.Println("WARNING: You used two flags to mark birthdate tracking.")
 		break
 	case trackBirthdate >= 0 && tb < 0:
 		break
@@ -122,10 +122,10 @@ func ActionRead(id int, forename, fn, surname, sn, birthdate, bd, nickname, nn s
 		trackBirthdate = tb
 		break
 	case (trackBirthdate == 1 && tb == 0) || (trackBirthdate == 0 && tb == 1):
-		fmt.Println("ERROR: You used two flags to set birthdate tracking, each with different data.")
+		fmt.Println("ERROR: You used two flags to mark birthdate tracking, each with different data.")
 		os.Exit(-1)
 	default:
-		fmt.Println("ERROR: Something went wrong with setting up the birthdate tracking.")
+		fmt.Println("ERROR: Something went wrong with marking the birthdate tracking.")
 		fmt.Println("       Please leave empty or -1 to left it in current state, 0 to disable, 1 to enable.")
 		os.Exit(-1)
 	}
