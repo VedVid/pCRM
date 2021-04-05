@@ -34,6 +34,7 @@ import (
 	"io/ioutil"
 	"os"
 	"math/rand"
+	"time"
 )
 
 
@@ -151,6 +152,14 @@ func addPerson(forename, surname, birthdate, nickname string, trackBirthdate int
 	var err error
 	var persons = &[]Person{}
 	var ids = []int{}
+
+	if birthdate != "" {
+		_, err = time.Parse(TimeLayout, birthdate)
+		if err != nil {
+			fmt.Println("ERROR: Birthdate layout does not match the YYYYMMDD sequence.")
+			os.Exit(-1)
+		}
+	}
 
 	f, err := ioutil.ReadFile("./data/people.json")
 	if err != nil {

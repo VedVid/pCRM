@@ -33,6 +33,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"time"
 )
 
 
@@ -145,6 +146,14 @@ func interactiveEdit() {
 func editPerson(id int, forename, surname, birthdate, nickname string, trackBirthdate int) {
 	var err error
 	var persons = &[]Person{}
+
+	if birthdate != "" {
+		_, err = time.Parse(TimeLayout, birthdate)
+		if err != nil {
+			fmt.Println("ERROR: Birthdate layout does not match the YYYYMMDD sequence.")
+			os.Exit(-1)
+		}
+	}
 
 	f, err := ioutil.ReadFile("./data/people.json")
 	if err != nil {

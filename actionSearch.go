@@ -33,6 +33,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"time"
 )
 
 
@@ -138,6 +139,14 @@ func searchPerson(forename, surname, birthdate, nickname string, trackBirthdate 
 	var err error
 	var persons = &[]Person{}
 	var tempPersons = []Person{}
+
+	if birthdate != "" {
+		_, err = time.Parse(TimeLayout, birthdate)
+		if err != nil {
+			fmt.Println("ERROR: Birthdate layout does not match the YYYYMMDD sequence.")
+			os.Exit(-1)
+		}
+	}
 
 	f, err := ioutil.ReadFile("./data/people.json")
 	if err != nil {
