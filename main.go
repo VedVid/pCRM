@@ -31,6 +31,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
+	"os/exec"
 	"math/rand"
 	"time"
 )
@@ -38,6 +40,7 @@ import (
 
 func main() {
 	// Main flags that will determine what action will be triggered
+	start := flag.Bool("start", false, "start a daemon")
 	add := flag.Bool("add", false, "add new person")
 	edit := flag.Int("edit", -1, "edit existing person")
 	read := flag.Int("read", -1, "read data about existing person, by ID")
@@ -69,6 +72,16 @@ func main() {
 	categoryListShort := flag.Bool("cl", false, "list all categories")
 
 	flag.Parse()
+
+	if *start == true {
+		cmd := exec.Command("./pcrmdaemon.exe")
+		err := cmd.Start()
+		if err != nil {
+			fmt.Println("Could not start pcrmdaemon.exe!")
+			os.Exit(-1)
+		}
+		os.Exit(1)
+	}
 
 	if *add == true && *edit < 0 && *read < 0 && *search == false &&
 		*list == false && *remove < 0 && *categories == false {
