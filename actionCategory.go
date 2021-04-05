@@ -38,10 +38,10 @@ import (
 )
 
 
-func ActionCategory(cnew, cn, cedit, ce string, clist, cl bool) {
+func ActionCategory(cnew, cn, cedit, ce, cremove, cr string, clist, cl bool) {
 
 	if cnew == "" && cn == "" && cedit == "" && ce == "" &&
-		clist == false && cl == false {
+		cremove == "" && cr == "" && clist == false && cl == false {
 		fmt.Println("INFO: Switching to interactive mode.")
 		interactiveCategory()
 		os.Exit(1)
@@ -80,6 +80,24 @@ func ActionCategory(cnew, cn, cedit, ce string, clist, cl bool) {
 		os.Exit(1)
 	default:
 		fmt.Println("ERROR: You used two flags to edit category, each with different data.")
+		os.Exit(-1)
+	}
+
+	switch {
+	case len(cremove) == 0 && len(cr) == 0:
+		break
+	case cremove == cr:
+		fmt.Println("WARNING: You used two flags to remove an existing category.")
+		removeCategory(cremove)
+		os.Exit(1)
+	case len(cremove) > 0 && len(cr) == 0:
+		removeCategory(cremove)
+		os.Exit(1)
+	case len(cremove) == 0 && len(cr) > 0:
+		newCategory(cr)
+		os.Exit(1)
+	default:
+		fmt.Println("ERROR: You used two flags to remove an existing category, each with different data.")
 		os.Exit(-1)
 	}
 
@@ -197,6 +215,60 @@ func editCategory(cedit string) {
 	}
 
 	data, err := json.MarshalIndent(categories, "", "    ")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("OK")
+	}
+
+	err = ioutil.WriteFile("./data/categories.json", data, 0644)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("OK")
+	}
+}
+
+
+func removeCategory(cremove string) {
+	var err error
+	var categoriesOld = &[]Category{}
+	var categoriesNew = &[]Category{}
+
+	f, err := ioutil.ReadFile("./data/categories.json")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("OK")
+	}
+
+	err = json.Unmarshal([]byte(f), categoriesOld)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("OK")
+	}
+
+	if len(*categoriesOld) == 0 {
+		fmt.Println("No categories found.")
+	}
+
+	validName := false
+	for _, v := range *categoriesOld {
+		if v.Name != cremove {
+			cat := Category{v.Name}
+			*categoriesNew = append(*categoriesNew, cat)
+		} else {
+			validName = true
+		}
+	}
+
+	if validName == false {
+		fmt.Println("ERROR: category", cremove, "not found.")
+		os.Exit(-1)
+	}
+
+	data, err := json.MarshalIndent(categoriesNew, "", "    ")
 	if err != nil {
 		fmt.Println(err)
 	} else {

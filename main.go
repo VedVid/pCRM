@@ -59,6 +59,8 @@ func main() {
 	categoryNewShort := flag.String("cn", "", "add new category")
 	categoryEdit := flag.String("cedit", "", "edit existing category")
 	categoryEditShort := flag.String("ce", "", "edit existing category")
+	categoryRemove := flag.String("cremove", "", "remove a category")
+	categoryRemoveShort := flag.String("cr", "", "remove a category")
 	categoryList := flag.Bool("clist", false, "list all categories")
 	categoryListShort := flag.Bool("cl", false, "list all categories")
 
@@ -78,7 +80,7 @@ func main() {
 			*birthdate, *birthdateShort, *nickname, *nicknameShort)
 	} else if *add == false && *edit < 0 && *read < 0 && *search == false && *categories == true {
 		ActionCategory(*categoryNew, *categoryNewShort, *categoryEdit, *categoryEditShort,
-			*categoryList, *categoryListShort)
+			*categoryRemove, *categoryRemoveShort, *categoryList, *categoryListShort)
 	} else {
 		fmt.Println("wrong parameters; you need to -add, OR -edit, OR -read, OR -search, OR -category.")
 	}
