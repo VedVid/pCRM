@@ -34,6 +34,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"sort"
 )
 
 
@@ -214,6 +215,7 @@ func editCategory(cedit string) {
 func readCategories() {
 	var err error
 	var categories = &[]Category{}
+	var categoriesText = []string{}
 
 	f, err := ioutil.ReadFile("./data/categories.json")
 	if err != nil {
@@ -233,6 +235,12 @@ func readCategories() {
 		fmt.Println("No categories found.")
 	}
 	for _, v := range *categories {
-		fmt.Println("-", v.Name)
+		categoriesText = append(categoriesText, v.Name)
+	}
+
+	sort.Strings(categoriesText)
+
+	for _, v := range categoriesText {
+		fmt.Println("-", v)
 	}
 }
