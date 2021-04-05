@@ -38,7 +38,6 @@ import (
 
 
 func ActionAdd(forename, fn, surname, sn, birthdate, bd, nickname, nn string) {
-
 	if forename == "" && fn == "" && surname == "" && sn == "" &&
 		birthdate == "" && bd == "" && nickname == "" && nn == "" {
 		fmt.Println("INFO: Switching to interactive mode.")

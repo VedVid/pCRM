@@ -37,7 +37,6 @@ import (
 
 
 func ActionEdit(id int, forename, fn, surname, sn, birthdate, bd, nickname, nn string) {
-
 	if id < 0 {
 		fmt.Println("ERROR: Wrong id passed.")
 		os.Exit(-1)
