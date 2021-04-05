@@ -42,6 +42,7 @@ func main() {
 	edit := flag.Int("edit", -1, "edit existing person")
 	read := flag.Int("read", -1, "read data about existing person, by ID")
 	search := flag.Bool("search", false, "search person by parameters")
+	remove := flag.Int("remove", -1, "remove existing person")
 	categories := flag.Bool("category", false, "manage categories")
 
 	// Optional flags for people
@@ -66,21 +67,29 @@ func main() {
 
 	flag.Parse()
 
-	if *add == true && *edit < 0 && *read < 0 && *search == false && *categories == false {
-		ActionAdd(*forename, *forenameShort, *surname, *surnameShort,
-			*birthdate, *birthdateShort, *nickname, *nicknameShort)
-	} else if *add == false && *edit >= 0 && *read < 0 && *search == false && *categories == false {
-		ActionEdit(*edit, *forename, *forenameShort, *surname, *surnameShort,
-			*birthdate, *birthdateShort, *nickname, *nicknameShort)
-	} else if *add == false && *edit < 0 && *read >= 0 && *search == false && *categories == false {
-		ActionRead(*read, *forename, *forenameShort, *surname, *surnameShort,
-			*birthdate, *birthdateShort, *nickname, *nicknameShort)
-	} else if *add == false && *edit < 0 && *read < 0 && *search == true && *categories == false {
-		ActionSearch(*forename, *forenameShort, *surname, *surnameShort,
-			*birthdate, *birthdateShort, *nickname, *nicknameShort)
-	} else if *add == false && *edit < 0 && *read < 0 && *search == false && *categories == true {
-		ActionCategory(*categoryNew, *categoryNewShort, *categoryEdit, *categoryEditShort,
-			*categoryRemove, *categoryRemoveShort, *categoryList, *categoryListShort)
+	if *add == true && *edit < 0 && *read < 0 && *search == false &&
+		*remove < 0 && *categories == false {
+			ActionAdd(*forename, *forenameShort, *surname, *surnameShort,
+				*birthdate, *birthdateShort, *nickname, *nicknameShort)
+	} else if *add == false && *edit >= 0 && *read < 0 && *search == false &&
+		*remove < 0 && *categories == false {
+			ActionEdit(*edit, *forename, *forenameShort, *surname, *surnameShort,
+				*birthdate, *birthdateShort, *nickname, *nicknameShort)
+	} else if *add == false && *edit < 0 && *read >= 0 && *search == false &&
+		*remove < 0 && *categories == false {
+			ActionRead(*read, *forename, *forenameShort, *surname, *surnameShort,
+				*birthdate, *birthdateShort, *nickname, *nicknameShort)
+	} else if *add == false && *edit < 0 && *read < 0 && *search == true &&
+		*remove < 0 && *categories == false {
+			ActionSearch(*forename, *forenameShort, *surname, *surnameShort,
+				*birthdate, *birthdateShort, *nickname, *nicknameShort)
+	} else if *add == false && *edit < 0 && *read < 0 && *search == false &&
+		 *remove >= 0 && *categories == false {
+			ActionRemove(*remove)
+	} else if *add == false && *edit < 0 && *read < 0 && *search == false &&
+		*remove < 0 && *categories == true {
+			ActionCategory(*categoryNew, *categoryNewShort, *categoryEdit, *categoryEditShort,
+				*categoryRemove, *categoryRemoveShort, *categoryList, *categoryListShort)
 	} else {
 		fmt.Println("wrong parameters; you need to -add, OR -edit, OR -read, OR -search, OR -category.")
 	}
