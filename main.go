@@ -78,7 +78,8 @@ func main() {
 	} else if *add == false && *edit >= 0 && *read < 0 && *search == false &&
 		*list == false && *remove < 0 && *categories == false {
 			ActionEdit(*edit, *forename, *forenameShort, *surname, *surnameShort,
-				*birthdate, *birthdateShort, *nickname, *nicknameShort)
+				*birthdate, *birthdateShort, *nickname, *nicknameShort,
+				*trackBirthdate, *trackBirthdateShort)
 	} else if *add == false && *edit < 0 && *read >= 0 && *search == false &&
 		*list == false && *remove < 0 && *categories == false {
 			ActionRead(*read, *forename, *forenameShort, *surname, *surnameShort,

@@ -36,14 +36,15 @@ import (
 )
 
 
-func ActionEdit(id int, forename, fn, surname, sn, birthdate, bd, nickname, nn string) {
+func ActionEdit(id int, forename, fn, surname, sn, birthdate, bd, nickname, nn string, trackBirthdate, tb int) {
 	if id < 0 {
 		fmt.Println("ERROR: Wrong id passed.")
 		os.Exit(-1)
 	}
 
 	if forename == "" && fn == "" && surname == "" && sn == "" &&
-		birthdate == "" && bd == "" && nickname == "" && nn == "" {
+		birthdate == "" && bd == "" && nickname == "" && nn == "" &&
+		trackBirthdate == -1 && tb == -1 {
 		fmt.Println("INFO: Switching to interactive mode.")
 		os.Exit(-1)
 	}
@@ -112,7 +113,27 @@ func ActionEdit(id int, forename, fn, surname, sn, birthdate, bd, nickname, nn s
 		os.Exit(-1)
 	}
 
-	editPerson(id, forename, surname, birthdate, nickname)
+	switch {
+	case trackBirthdate < 0 && tb < 0:
+		break
+	case trackBirthdate == tb:
+		fmt.Println("WARNING: You used two flags to set birthdate tracking.")
+		break
+	case trackBirthdate >= 0 && tb < 0:
+		break
+	case trackBirthdate < 0 && tb >= 0:
+		trackBirthdate = tb
+		break
+	case (trackBirthdate == 1 && tb == 0) || (trackBirthdate == 0 && tb == 1):
+		fmt.Println("ERROR: You used two flags to set birthdate tracking, each with different data.")
+		os.Exit(-1)
+	default:
+		fmt.Println("ERROR: Something went wrong with setting up the birthdate tracking.")
+		fmt.Println("       Please leave empty or -1 to left it in current state, 0 to disable, 1 to enable.")
+		os.Exit(-1)
+	}
+
+	editPerson(id, forename, surname, birthdate, nickname, trackBirthdate)
 }
 
 
@@ -121,7 +142,7 @@ func interactiveEdit() {
 }
 
 
-func editPerson(id int, forename, surname, birthdate, nickname string) {
+func editPerson(id int, forename, surname, birthdate, nickname string, trackBirthdate int) {
 	var err error
 	var persons = &[]Person{}
 
@@ -154,6 +175,11 @@ func editPerson(id int, forename, surname, birthdate, nickname string) {
 			}
 			if nickname != "" {
 				(*persons)[i].Nickname = nickname
+			}
+			if trackBirthdate == 0 {
+				(*persons)[i].TrackBirthdate = 0
+			} else if trackBirthdate == 1 {
+				(*persons)[i].TrackBirthdate = 1
 			}
 			break
 		}
