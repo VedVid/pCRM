@@ -140,10 +140,60 @@ func newCategory(cnew string) {
 
 
 func editCategory(cedit string) {
+	var err error
+	var categories = &[]Category{}
+
 	if flag.NArg() != 1 {
 		fmt.Println("ERROR: Invalid number of arguments:", flag.NArg(),
 			"; should be 1.")
 		os.Exit(-1)
 	}
-	fmt.Println("Old name:", cedit, "New name:", flag.Arg(len(flag.Args())-1))
+
+	f, err := ioutil.ReadFile("./data/categories.json")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("OK")
+	}
+
+	err = json.Unmarshal([]byte(f), categories)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("OK")
+	}
+
+	validName := false
+	newName := flag.Arg(len(flag.Args())-1)
+	for i, v := range *categories {
+		if cedit == v.Name {
+			validName = true
+			if newName != "" {
+				(*categories)[i].Name = newName
+			} else {
+				fmt.Println("ERROR: new category name can not be empty.")
+				os.Exit(-1)
+			}
+			break
+		}
+	}
+
+	if validName == false {
+		fmt.Println("ERROR: category marked for edit not found.")
+		os.Exit(-1)
+	}
+
+	data, err := json.MarshalIndent(categories, "", "    ")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("OK")
+	}
+
+	err = ioutil.WriteFile("./data/categories.json", data, 0644)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("OK")
+	}
 }
