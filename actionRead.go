@@ -36,16 +36,17 @@ import (
 )
 
 
-func ActionRead(id int, forename, fn, surname, sn, birthdate, bd, nickname, nn string) {
+func ActionRead(id int, forename, fn, surname, sn, birthdate, bd, nickname, nn string, trackBirthdate, tb int) {
 	if id < 0 {
 		fmt.Println("ERROR: Wrong id passed.")
 		os.Exit(-1)
 	}
 
 	if forename == "" && fn == "" && surname == "" && sn == "" &&
-		birthdate == "" && bd == "" && nickname == "" && nn == "" {
+		birthdate == "" && bd == "" && nickname == "" && nn == "" &&
+		trackBirthdate == -1 && tb == -1 {
 		fmt.Println("INFO: Show all fields.")
-		readPerson(id, true, "", "", "", "")
+		readPerson(id, true, "", "", "", "", -1)
 		os.Exit(1)
 	}
 
@@ -109,11 +110,31 @@ func ActionRead(id int, forename, fn, surname, sn, birthdate, bd, nickname, nn s
 		break
 	}
 
-	readPerson(id, false, forename, surname, birthdate, nickname)
+	switch {
+	case trackBirthdate < 0 && tb < 0:
+		break
+	case trackBirthdate == tb:
+		fmt.Println("WARNING: You used two flags to set birthdate tracking.")
+		break
+	case trackBirthdate >= 0 && tb < 0:
+		break
+	case trackBirthdate < 0 && tb >= 0:
+		trackBirthdate = tb
+		break
+	case (trackBirthdate == 1 && tb == 0) || (trackBirthdate == 0 && tb == 1):
+		fmt.Println("ERROR: You used two flags to set birthdate tracking, each with different data.")
+		os.Exit(-1)
+	default:
+		fmt.Println("ERROR: Something went wrong with setting up the birthdate tracking.")
+		fmt.Println("       Please leave empty or -1 to left it in current state, 0 to disable, 1 to enable.")
+		os.Exit(-1)
+	}
+
+	readPerson(id, false, forename, surname, birthdate, nickname, trackBirthdate)
 }
 
 
-func readPerson(id int, all bool, forename, surname, birthdate, nickname string) {
+func readPerson(id int, all bool, forename, surname, birthdate, nickname string, trackBirthdate int) {
 	var err error
 	var persons = &[]Person{}
 
@@ -136,24 +157,28 @@ func readPerson(id int, all bool, forename, surname, birthdate, nickname string)
 		if id == v.Id {
 			validID = true
 			if all == true {
-				fmt.Println("Id:       ", v.Id)
-				fmt.Println("Forename: ", v.Forename)
-				fmt.Println("Surname:  ", v.Surname)
-				fmt.Println("Birthdate:", v.Birthdate)
-				fmt.Println("Nickname: ", v.Nickname)
+				fmt.Println("Id:             ", v.Id)
+				fmt.Println("Forename:       ", v.Forename)
+				fmt.Println("Surname:        ", v.Surname)
+				fmt.Println("Birthdate:      ", v.Birthdate)
+				fmt.Println("Nickname:       ", v.Nickname)
+				fmt.Println("Track birthdate:", v.TrackBirthdate)
 			} else {
-				fmt.Println("Id:       ", v.Id)
+				fmt.Println("Id:             ", v.Id)
 				if forename != "" {
-					fmt.Println("Forename: ", v.Forename)
+					fmt.Println("Forename:       ", v.Forename)
 				}
 				if surname != "" {
-					fmt.Println("Surname:  ", v.Surname)
+					fmt.Println("Surname:        ", v.Surname)
 				}
 				if birthdate != "" {
-					fmt.Println("Birthdate:", v.Birthdate)
+					fmt.Println("Birthdate:      ", v.Birthdate)
 				}
 				if nickname != "" {
-					fmt.Println("Nickname: ", v.Nickname)
+					fmt.Println("Nickname:       ", v.Nickname)
+				}
+				if trackBirthdate == 1 {
+					fmt.Println("Track birthdate:", v.TrackBirthdate)
 				}
 			}
 			break
