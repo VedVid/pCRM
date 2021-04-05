@@ -36,9 +36,10 @@ import (
 )
 
 
-func ActionSearch(forename, fn, surname, sn, birthdate, bd, nickname, nn string) {
+func ActionSearch(forename, fn, surname, sn, birthdate, bd, nickname, nn string, trackBirthdate, tb int) {
 	if forename == "" && fn == "" && surname == "" && sn == "" &&
-		birthdate == "" && bd == "" && nickname == "" && nn == "" {
+		birthdate == "" && bd == "" && nickname == "" && nn == "" &&
+		trackBirthdate == -1 && tb == -1 {
 		fmt.Println("INFO: Switching to interactive mode.")
 		interactiveSearch()
 		os.Exit(1)
@@ -104,7 +105,27 @@ func ActionSearch(forename, fn, surname, sn, birthdate, bd, nickname, nn string)
 		break
 	}
 
-	searchPerson(forename, surname, birthdate, nickname)
+	switch {
+	case trackBirthdate < 0 && tb < 0:
+		break
+	case trackBirthdate == tb:
+		fmt.Println("WARNING: You used two flags to set birthdate tracking.")
+		break
+	case trackBirthdate >= 0 && tb < 0:
+		break
+	case trackBirthdate < 0 && tb >= 0:
+		trackBirthdate = tb
+		break
+	case (trackBirthdate == 1 && tb == 0) || (trackBirthdate == 0 && tb == 1):
+		fmt.Println("ERROR: You used two flags to set birthdate tracking, each with different data.")
+		os.Exit(-1)
+	default:
+		fmt.Println("ERROR: Something went wrong with setting up the birthdate tracking.")
+		fmt.Println("       Please leave empty or -1 to left it in current state, 0 to disable, 1 to enable.")
+		os.Exit(-1)
+	}
+
+	searchPerson(forename, surname, birthdate, nickname, trackBirthdate)
 }
 
 
@@ -113,7 +134,7 @@ func interactiveSearch() {
 }
 
 
-func searchPerson(forename, surname, birthdate, nickname string) {
+func searchPerson(forename, surname, birthdate, nickname string, trackBirthdate int) {
 	var err error
 	var persons = &[]Person{}
 	var tempPersons = []Person{}
@@ -136,6 +157,7 @@ func searchPerson(forename, surname, birthdate, nickname string) {
 	validSurname := false
 	validBirthdate := false
 	validNickname := false
+	validBirthdateTracking := false
 	for _, v := range *persons {
 		if forename == "" {
 			validForename = true
@@ -161,8 +183,16 @@ func searchPerson(forename, surname, birthdate, nickname string) {
 		if nickname != "" && nickname == v.Nickname {
 			validNickname = true
 		}
+		if trackBirthdate == -1 {
+			validBirthdateTracking = true
+		}
+		if (trackBirthdate == 0 && v.TrackBirthdate == 0) ||
+			(trackBirthdate == 1 && v.TrackBirthdate == 1) {
+				validBirthdateTracking = true
+			}
 		if validForename == true && validSurname == true &&
-			validBirthdate == true && validNickname == true {
+			validBirthdate == true && validNickname == true &&
+			validBirthdateTracking == true {
 				tempPersons = append(tempPersons, v)
 		}
 	}
