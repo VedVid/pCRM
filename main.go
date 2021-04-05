@@ -55,6 +55,8 @@ func main() {
 	birthdateShort := flag.String("bd", "", "")
 	nickname := flag.String("nickname", "", "")
 	nicknameShort := flag.String("nn", "", "")
+	trackBirthdate := flag.Int("trackbirthdate", -1, "")
+	trackBirthdateShort := flag.Int("tb", -1, "")
 
 	// Optional flags for categories
 	categoryNew := flag.String("cnew", "", "add new category")
@@ -71,7 +73,8 @@ func main() {
 	if *add == true && *edit < 0 && *read < 0 && *search == false &&
 		*list == false && *remove < 0 && *categories == false {
 			ActionAdd(*forename, *forenameShort, *surname, *surnameShort,
-				*birthdate, *birthdateShort, *nickname, *nicknameShort)
+				*birthdate, *birthdateShort, *nickname, *nicknameShort,
+				*trackBirthdate, *trackBirthdateShort)
 	} else if *add == false && *edit >= 0 && *read < 0 && *search == false &&
 		*list == false && *remove < 0 && *categories == false {
 			ActionEdit(*edit, *forename, *forenameShort, *surname, *surnameShort,

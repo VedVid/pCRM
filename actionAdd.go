@@ -37,9 +37,10 @@ import (
 )
 
 
-func ActionAdd(forename, fn, surname, sn, birthdate, bd, nickname, nn string) {
+func ActionAdd(forename, fn, surname, sn, birthdate, bd, nickname, nn string, trackBirthdate, tb int) {
 	if forename == "" && fn == "" && surname == "" && sn == "" &&
-		birthdate == "" && bd == "" && nickname == "" && nn == "" {
+		birthdate == "" && bd == "" && nickname == "" && nn == "" &&
+		trackBirthdate == -1 && tb == -1 {
 		fmt.Println("INFO: Switching to interactive mode.")
 		interactiveAdd()
 		os.Exit(1)
@@ -117,7 +118,27 @@ func ActionAdd(forename, fn, surname, sn, birthdate, bd, nickname, nn string) {
 		os.Exit(-1)
 	}
 
-	addPerson(forename, surname, birthdate, nickname)
+	switch {
+	case trackBirthdate < 0 && tb < 0:
+		break
+	case trackBirthdate == tb:
+		fmt.Println("WARNING: You used two flags to set birthdate tracking.")
+		break
+	case trackBirthdate >= 0 && tb < 0:
+		break
+	case trackBirthdate < 0 && tb >= 0:
+		trackBirthdate = tb
+		break
+	case (trackBirthdate == 1 && tb == 0) || (trackBirthdate == 0 && tb == 1):
+		fmt.Println("ERROR: You used two flags to set birthdate tracking, each with different data.")
+		os.Exit(-1)
+	default:
+		fmt.Println("ERROR: Something went wrong with setting up the birthdate tracking.")
+		fmt.Println("       Please leave empty or -1 to left it in current state, 0 to disable, 1 to enable.")
+		os.Exit(-1)
+	}
+
+	addPerson(forename, surname, birthdate, nickname, trackBirthdate)
 }
 
 
@@ -126,7 +147,7 @@ func interactiveAdd() {
 }
 
 
-func addPerson(forename, surname, birthdate, nickname string) {
+func addPerson(forename, surname, birthdate, nickname string, trackBirthdate int) {
 	var err error
 	var persons = &[]Person{}
 	var ids = []int{}
@@ -176,7 +197,7 @@ func addPerson(forename, surname, birthdate, nickname string) {
 	}
 
 	if id > 0 {
-		newPerson := &Person{id, forename, surname, birthdate, nickname}
+		newPerson := &Person{id, forename, surname, birthdate, nickname, trackBirthdate}
 		*persons = append(*persons, *newPerson)
 		fmt.Println(persons)
 	}
