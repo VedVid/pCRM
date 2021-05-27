@@ -18,3 +18,8 @@ pcrm add
 Każda osoba będzie miała swój nr ID, więc można np:
 
 pcrm edit 12 -fn "Tomek"
+
+
+TODO: 
+ - short and verbose lists
+ - add categories to the persons, and remove categories from persons if the category is removed from 
